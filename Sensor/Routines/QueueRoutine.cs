@@ -68,8 +68,11 @@ namespace Sensor.Routines
 
         private void ResetUpwardQueueOrder()
         {
-            var upwardElememts = new Queue<Button>(UpwardQueue.ToArray()
-                                .OrderBy(floor => floor.ButtonPress).ToList());
+            var upwardElememts = new Queue<Button>(UpwardQueue
+                                .ToArray().GroupBy(button => button.ButtonPress)
+                                .Select( group => group.First())
+                                .OrderBy(floor => floor.ButtonPress)
+                                .ToList());
 
             lock (_inputQueueResource)
             {

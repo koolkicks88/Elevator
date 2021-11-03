@@ -10,8 +10,6 @@ namespace ElevatorModels
             State = ElevatorState.Stop.ToString();
         }
 
-        private readonly object _elevatorSettings = new object();
-
         public ElevatorState ElevatorCurrentState;
         public ElevatorDirection ElevatorCurrentDirection;
 
@@ -21,17 +19,12 @@ namespace ElevatorModels
             get { return ElevatorCurrentState.ToString(); }
             set
             {
-                switch (value)
+                ElevatorCurrentState = value switch
                 {
-                    case "Stop":
-                        ElevatorCurrentState = ElevatorState.Stop;
-                        break;
-                    case "Moving":
-                        ElevatorCurrentState = ElevatorState.Moving;
-                        break;
-                    default:
-                        throw new Exception("invalid elevator state");
-                }
+                    "Stop" => ElevatorState.Stop,
+                    "Moving" => ElevatorState.Moving,
+                    _ => throw new Exception("invalid elevator state"),
+                };
             }
         }
 
@@ -40,30 +33,20 @@ namespace ElevatorModels
             get { return ElevatorCurrentDirection.ToString(); }
             set
             {
-                switch (value)
+                ElevatorCurrentDirection = value switch
                 {
-                    case "Up":
-                        ElevatorCurrentDirection = ElevatorDirection.Up;
-                        break;
-                    case "Down":
-                        ElevatorCurrentDirection = ElevatorDirection.Down;
-                        break;
-                    case "Idle":
-                        ElevatorCurrentDirection = ElevatorDirection.Idle;
-                        break;
-                    default:
-                        throw new Exception("invalid elevator state");
-                }
+                    "Up" => ElevatorDirection.Up,
+                    "Down" => ElevatorDirection.Down,
+                    "Idle" => ElevatorDirection.Idle,
+                    _ => throw new Exception("invalid elevator state"),
+                };
             }
         }
 
         public void SetCurrentData(Elevator elevator)
         {
-            lock (_elevatorSettings)
-            {
-                Direction = elevator.Direction;
-                State = elevator.State;
-            }
+            Direction = elevator.Direction;
+            State = elevator.State;
         }
 
         public enum ElevatorState

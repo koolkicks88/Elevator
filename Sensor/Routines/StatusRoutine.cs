@@ -66,6 +66,11 @@ namespace Sensor
                 $"and current direction is: {elevator.Direction}");
         }
 
+        internal void ShutDownRoutine()
+        {
+            Logger.Write("Shutdown routine initiated");
+        }
+
         internal void MaxWeighRoutine()
         {
             Logger.Write("Max weight routine initiated." +

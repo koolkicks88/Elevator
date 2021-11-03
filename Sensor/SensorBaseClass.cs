@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Logger;
+﻿using Logger;
 
 namespace Sensor
 {

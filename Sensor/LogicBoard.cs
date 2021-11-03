@@ -21,33 +21,39 @@ namespace Sensor
             _timer = new TimerRoutine();
         }
 
-        private static Floor _floor = new Floor();
-        private Elevator _elevator = new Elevator();
+        private static readonly Floor _floor = new Floor();
+        private readonly Elevator _elevator = new Elevator();
         private readonly TimerRoutine _timer;
         public readonly QueueRoutine _queue;
         private StatusRoutine _status;
         private readonly char upwardRequest = 'U';
         private readonly char downwardRequest = 'D';
-        private static bool maxWeight;
+        private readonly char shutdownRequest = 'Q';
+        private static bool shutDownSignal;
 
         public ILogger Logger { get; }
 
         public void AddElevatorRequest(string input)
         {
-            Logger.Write("Button Pressed.. Starting Proccess");
-            Logger.Write($"Adding floor request {input} in the queue.");
+            CheckForShutDownSignal(input);
 
-            AddToDesignatedQueue(input);
+            if (!shutDownSignal)
+            {
+                Logger.Write("Button Pressed.. Starting Proccess");
+                Logger.Write($"Adding floor request {input} in the queue.");
+                AddToDesignatedQueue(input);
+            }
         }
 
-        //private void CheckForWeightRestriction()
-        //{
-        //    if (input.Any(values => values.Contains('Q'))) ;
-        //    {
-        //        var routime = new MaxWeightRoutine();
-        //        routime.CompleteInteralRequests();
-        //    }
-        //}
+        private void CheckForShutDownSignal(string input)
+        {
+            if (input.Contains(shutdownRequest))
+            {
+                shutDownSignal = true;
+
+                _status.ShutDownRoutine();
+            }
+        }
 
         private void AddToDesignatedQueue(string request)
         {
@@ -59,7 +65,7 @@ namespace Sensor
         private void ParseRequestValues(string request, out int destinationLevel, out Button button)
         {
             destinationLevel = int.Parse(request
-                .Trim(new char[] { upwardRequest, downwardRequest, 'Q', }));
+                .Trim(new char[] { upwardRequest, downwardRequest}));
             var action = new string(request.ToCharArray().Where(c => !char.IsDigit(c)).ToArray());
 
             button = new Button
@@ -101,10 +107,10 @@ namespace Sensor
 
         public void StartProcess()
         {
-            Thread.Sleep(1000);
-            while (_queue.ActiveRequest()) //|| !_shutDownSignal)
+            while (_queue.ActiveRequest() || !shutDownSignal)
             {
-                if(_queue.UpwardPeekQueue(out var _))
+
+                if (_queue.UpwardPeekQueue(out var _))
                 {
                     while(_queue.UpwardEmptyQueue())
                         ProcessUpwardQueue();
@@ -115,10 +121,10 @@ namespace Sensor
                     while (_queue.DownwardEmptyQueue())
                         ProcessDownwardQueue();
                 }
-            }
 
-            SetIdleProperties();
-            _status.Direction(ElevatorDirection.Idle.ToString());
+                SetIdleProperties();
+                Thread.Sleep(2000);
+            }
 
             Logger.Write("No remaining requests... exiting");
         }
@@ -243,10 +249,11 @@ namespace Sensor
 
         private void CheckForDownwardDestination(int floor)
         {
-            _queue.UpwardPeekQueue(out var button);
+            _queue.DownwardPeekQueue(out var button);
+            var currentDestination = button.ButtonPress;
 
-            if (_floor.CurrentFloor == button.ButtonPress)
-                DequeueCurrentDownwardRequests(floor);
+            if (_floor.CurrentFloor == currentDestination)
+                DequeueCurrentDownwardRequests(currentDestination);
         }
 
         private void DequeueCurrentDownwardRequests(int floor)
