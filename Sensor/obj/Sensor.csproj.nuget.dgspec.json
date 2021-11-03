@@ -1,0 +1,177 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\Sensor\\Sensor.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\ElevatorModels\\ElevatorModels.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\ElevatorModels\\ElevatorModels.csproj",
+        "projectName": "ElevatorModels",
+        "projectPath": "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\ElevatorModels\\ElevatorModels.csproj",
+        "packagesPath": "C:\\Users\\mletona\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\ElevatorModels\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mletona\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.208\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\Logger\\Logger.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\Logger\\Logger.csproj",
+        "projectName": "Logger",
+        "projectPath": "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\Logger\\Logger.csproj",
+        "packagesPath": "C:\\Users\\mletona\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\Logger\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mletona\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.208\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\Sensor\\Sensor.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\Sensor\\Sensor.csproj",
+        "projectName": "Sensor",
+        "projectPath": "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\Sensor\\Sensor.csproj",
+        "packagesPath": "C:\\Users\\mletona\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\Sensor\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mletona\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\ElevatorModels\\ElevatorModels.csproj": {
+                "projectPath": "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\ElevatorModels\\ElevatorModels.csproj"
+              },
+              "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\Logger\\Logger.csproj": {
+                "projectPath": "C:\\Users\\mletona\\source\\repos\\Letona_Elevator\\Logger\\Logger.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.208\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+C:\Users\mletona\source\repos\Letona_Elevator\ElevatorModels\bin\Debug\netcoreapp3.1\ElevatorModels.deps.json
+C:\Users\mletona\source\repos\Letona_Elevator\ElevatorModels\bin\Debug\netcoreapp3.1\ElevatorModels.dll
+C:\Users\mletona\source\repos\Letona_Elevator\ElevatorModels\bin\Debug\netcoreapp3.1\ElevatorModels.pdb
+C:\Users\mletona\source\repos\Letona_Elevator\ElevatorModels\obj\Debug\netcoreapp3.1\ElevatorModels.csprojAssemblyReference.cache
+C:\Users\mletona\source\repos\Letona_Elevator\ElevatorModels\obj\Debug\netcoreapp3.1\ElevatorModels.AssemblyInfoInputs.cache
+C:\Users\mletona\source\repos\Letona_Elevator\ElevatorModels\obj\Debug\netcoreapp3.1\ElevatorModels.AssemblyInfo.cs
+C:\Users\mletona\source\repos\Letona_Elevator\ElevatorModels\obj\Debug\netcoreapp3.1\ElevatorModels.csproj.CoreCompileInputs.cache
+C:\Users\mletona\source\repos\Letona_Elevator\ElevatorModels\obj\Debug\netcoreapp3.1\ElevatorModels.dll
+C:\Users\mletona\source\repos\Letona_Elevator\ElevatorModels\obj\Debug\netcoreapp3.1\ElevatorModels.pdb

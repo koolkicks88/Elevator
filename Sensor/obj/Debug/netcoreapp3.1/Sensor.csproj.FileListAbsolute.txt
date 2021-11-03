@@ -1,0 +1,14 @@
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\bin\Debug\netcoreapp3.1\Sensor.deps.json
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\bin\Debug\netcoreapp3.1\Sensor.dll
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\bin\Debug\netcoreapp3.1\Sensor.pdb
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\bin\Debug\netcoreapp3.1\ElevatorModels.dll
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\bin\Debug\netcoreapp3.1\Logger.dll
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\bin\Debug\netcoreapp3.1\ElevatorModels.pdb
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\bin\Debug\netcoreapp3.1\Logger.pdb
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\obj\Debug\netcoreapp3.1\Sensor.csprojAssemblyReference.cache
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\obj\Debug\netcoreapp3.1\Sensor.AssemblyInfoInputs.cache
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\obj\Debug\netcoreapp3.1\Sensor.AssemblyInfo.cs
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\obj\Debug\netcoreapp3.1\Sensor.csproj.CoreCompileInputs.cache
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\obj\Debug\netcoreapp3.1\Sensor.csproj.CopyComplete
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\obj\Debug\netcoreapp3.1\Sensor.dll
+C:\Users\mletona\source\repos\Letona_Elevator\Sensor\obj\Debug\netcoreapp3.1\Sensor.pdb

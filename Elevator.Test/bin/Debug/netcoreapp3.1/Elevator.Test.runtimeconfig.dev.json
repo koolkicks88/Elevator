@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "C:\\Users\\mletona\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\mletona\\.nuget\\packages"
+    ]
+  }
+}
