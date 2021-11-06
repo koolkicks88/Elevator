@@ -6,6 +6,9 @@ using Logger;
 using FluentAssertions;
 using System.Threading;
 using System.Linq;
+using Sensor.Routines;
+using ElevatorModels;
+using Moq;
 
 namespace Elevator.Test
 {
@@ -13,20 +16,28 @@ namespace Elevator.Test
     {
         private DummyLogger logger;
         private readonly LogicBoard logicBoard;
+        private readonly KeyPadRoutine keyPad;
 
         public Requests()
         {
             logger = new DummyLogger();
             logicBoard = new LogicBoard(logger);
+            keyPad = new KeyPadRoutine(logger, Floor.GetFloorInformation());
         }
 
         [Fact]
         public void Upward_AscendASingleLevel_Success()
         {
             var request = "1";
+            //var keyPad = new KeyPadRoutine(logger, Floor.GetFloorInformation());
 
-            var queue = logicBoard._queue;
-            logicBoard.AddElevatorRequest(request);
+            //System.Reflection.FieldInfo instance = typeof(Floor)
+            //    .GetField("_instance", System.Reflection.BindingFlags.Static
+            //    | System.Reflection.BindingFlags.NonPublic);
+            //Mock<Floor> mockSingleton = new Mock<Floor>();
+            //instance.SetValue(null, null);//mockSingleton.Object);
+
+            keyPad.AddElevatorRequest(request);
 
             logicBoard.StartProcess();
 
@@ -38,17 +49,19 @@ namespace Elevator.Test
         public void Upward_AscendTwoLevels_Success()
         {
             var requests = new List<string> { "1", "2" };
+             var logicBoard = new LogicBoard(logger);
+            
+            //System.Reflection.FieldInfo instance = typeof(Floor)
+            //   .GetField("_instance", System.Reflection.BindingFlags.Static
+            //   | System.Reflection.BindingFlags.NonPublic);
+            //Mock<IFloor> mockSingleton = new Mock<IFloor>();
+            //instance.SetValue(null, mockSingleton.Object);
 
             foreach (var request in requests)
-                logicBoard.AddElevatorRequest(request);
+                keyPad.AddElevatorRequest(request);
 
             logicBoard.StartProcess();
-            while (logicBoard._queue.ActiveRequest())
-            {
-
-                Thread.Sleep(500);
-            }
-
+           
             var logLine = logger.Message.Split('\n').ToList().Where(w => w.Contains("Stopping"));
             AssertFirstDestinationLevel(logLine, 1);
             AssertLastDestinationLevel(logLine, 2);
@@ -58,9 +71,8 @@ namespace Elevator.Test
         public void Upward_RemovesDuplicateRequest_Success()
         {
             var requests = new List<string> { "1", "2", "1" };
-
             foreach (var request in requests)
-                logicBoard.AddElevatorRequest(request);
+                keyPad.AddElevatorRequest(request);
 
             logicBoard.StartProcess();
 
@@ -75,7 +87,7 @@ namespace Elevator.Test
             var requests = new List<string> { "1", "4U"};
 
             foreach (var request in requests)
-                logicBoard.AddElevatorRequest(request);
+                keyPad.AddElevatorRequest(request);
 
             logicBoard.StartProcess();
 
@@ -90,7 +102,7 @@ namespace Elevator.Test
             var requests = new List<string> { "1U", "4U" };
 
             foreach (var request in requests)
-                logicBoard.AddElevatorRequest(request);
+                keyPad.AddElevatorRequest(request);
 
             logicBoard.StartProcess();
 
@@ -107,7 +119,7 @@ namespace Elevator.Test
             var requests = new List<string> { $"{firstDestination}", $"{secondDestination}" + "D" };
 
             foreach (var request in requests)
-                logicBoard.AddElevatorRequest(request);
+                keyPad.AddElevatorRequest(request);
 
             logicBoard.StartProcess();
 
@@ -126,7 +138,7 @@ namespace Elevator.Test
                 shutdownCommand };
 
             foreach (var request in requests)
-                logicBoard.AddElevatorRequest(request);
+                keyPad.AddElevatorRequest(request);
 
             logicBoard.StartProcess();
 
@@ -140,27 +152,15 @@ namespace Elevator.Test
         [Fact]
         public void Upward_ArriveOutOfOrder_Success()
         {
-            var requests = new List<string> { "6", "3","1" };
+            var requests = new List<string> { "6", "3", "1" };
 
-
-            var queue = logicBoard._queue;
-            //do
-            //{
-                foreach (var request in requests)
-                {
-                    Thread.Sleep(1000);
-                    logicBoard.AddElevatorRequest(request);
-
-                }
-            //}
-            while (queue.ActiveRequest())
+            foreach (var request in requests)
             {
-                logicBoard.StartProcess();
-
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
+                keyPad.AddElevatorRequest(request);
             }
 
-
+            logicBoard.StartProcess();
             var p = logger.Message;
         }
 
@@ -195,18 +195,5 @@ namespace Elevator.Test
                 Message += "\n" + " " + message;
             }
         }
-
-        //public static string GetBetween(string strSource, string strStart, string strEnd)
-        //{
-        //    if (strSource.Contains(strStart) && strSource.Contains(strEnd))
-        //    {
-        //        int Start, End;
-        //        Start = strSource.IndexOf(strStart, 0) + strStart.Length;
-        //        End = strSource.IndexOf(strEnd, Start);
-        //        return strSource.Substring(Start, End - Start);
-        //    }
-
-        //    return "";
-        //}
     }
 }

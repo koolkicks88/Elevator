@@ -4,16 +4,23 @@ namespace ElevatorModels
 {
     public class Elevator
     {
-        public Elevator()
+        private static Elevator _instance = new Elevator();
+        private Elevator()
         {
             Direction = ElevatorDirection.Idle.ToString();
             State = ElevatorState.Stop.ToString();
+        }
+
+        public static Elevator GetElevatorInformation()
+        {
+            return _instance;
         }
 
         public ElevatorState ElevatorCurrentState;
         public ElevatorDirection ElevatorCurrentDirection;
 
         public bool ReachedMaxWeight { get; set; }
+        public bool ShutDownSignal { get; set; }
         public string State
         {
             get { return ElevatorCurrentState.ToString(); }

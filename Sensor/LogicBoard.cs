@@ -1,11 +1,6 @@
 ﻿using ElevatorModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Sensor.Routines;
 using static ElevatorModels.Elevator;
-using static ElevatorModels.Button;
 using Logger;
 using System.Threading;
 
@@ -16,98 +11,24 @@ namespace Sensor
         public LogicBoard(ILogger logger)
         {
             Logger = logger;
-            _queue = new QueueRoutine();
             _status = new StatusRoutine(logger);
             _timer = new TimerRoutine();
         }
 
-        private static readonly Floor _floor = new Floor();
-        private readonly Elevator _elevator = new Elevator();
-        private readonly TimerRoutine _timer;
-        public readonly QueueRoutine _queue;
+        private static readonly Floor _floor = Floor.GetFloorInformation();
+        private static readonly Elevator _elevator = Elevator.GetElevatorInformation();
+        private static readonly QueueRoutine _queue =  QueueRoutine.GetQueueRoutine();
+
         private StatusRoutine _status;
-        private readonly char upwardRequest = 'U';
-        private readonly char downwardRequest = 'D';
-        private readonly char shutdownRequest = 'Q';
-        private static bool shutDownSignal;
+        private readonly TimerRoutine _timer;
+
 
         public ILogger Logger { get; }
 
-        public void AddElevatorRequest(string input)
-        {
-            CheckForShutDownSignal(input);
-
-            if (!shutDownSignal)
-            {
-                Logger.Write("Button Pressed.. Starting Proccess");
-                Logger.Write($"Adding floor request {input} in the queue.");
-                AddToDesignatedQueue(input);
-            }
-        }
-
-        private void CheckForShutDownSignal(string input)
-        {
-            if (input.Contains(shutdownRequest))
-            {
-                shutDownSignal = true;
-
-                _status.ShutDownRoutine();
-            }
-        }
-
-        private void AddToDesignatedQueue(string request)
-        {
-            ParseRequestValues(request, out int destinationLevel, out Button button);
-
-            InsertToQueue(destinationLevel, button);
-        }
-
-        private void ParseRequestValues(string request, out int destinationLevel, out Button button)
-        {
-            destinationLevel = int.Parse(request
-                .Trim(new char[] { upwardRequest, downwardRequest}));
-            var action = new string(request.ToCharArray().Where(c => !char.IsDigit(c)).ToArray());
-
-            button = new Button
-            {
-                ButtonPress = destinationLevel,
-                Action = action
-            };
-        }
-
-        private void InsertToQueue(int destinationLevel, Button button)
-        {
-            var action = Enum.Parse(typeof(ButtonAction),button.Action);
-            switch (action)
-            {
-                case ButtonAction.Up:
-                    _queue.EnqueueUpwardRequest(button);
-                    break;
-                case ButtonAction.Internal:
-                    CalculateInternalQueue(button, destinationLevel);
-                    break;
-                case ButtonAction.Down:
-                    _queue.EnqueueDownwardRequest(button);
-                    break;
-                default:
-                    throw new Exception("incorrect button action type");
-            }
-        }
-
-        private void CalculateInternalQueue(Button button, int destinationLevel)
-        {
-            if (_floor.CurrentFloor <
-            destinationLevel)
-                _queue.EnqueueUpwardRequest(button);
-            else
-            {
-                _queue.EnqueueDownwardRequest(button);
-            }
-        }
 
         public void StartProcess()
         {
-            while (_queue.ActiveRequest() || !shutDownSignal)
+            while (_queue.ActiveRequest() )//|| !_elevator.ShutDownSignal)
             {
 
                 if (_queue.UpwardPeekQueue(out var _))
@@ -122,6 +43,7 @@ namespace Sensor
                         ProcessDownwardQueue();
                 }
 
+                _status.WaitingForAdditionalRequests();
                 SetIdleProperties();
                 Thread.Sleep(2000);
             }
@@ -205,7 +127,8 @@ namespace Sensor
             for (int floor = currentFloor; floor < currentFloor + levelsToAdvance; floor++)
             {
                 LogMovementStatusAsync(floor);
-                AscendSingleLevel(floor);
+                _floor.AscendSingleLevel(floor);
+                _status.DetermineNextFloor(_floor.NextLevel);
 
                 if (_queue.ReviseUpwardQueueOrder(_floor.CurrentFloor))
                     SetElevatorUpwardProjection();
@@ -223,7 +146,8 @@ namespace Sensor
             for (int floor = currentFloor; floor > currentFloor - levelsToAdvance; floor--)
             {
                 LogMovementStatusAsync(floor);
-                DescendSingleLevel(floor);
+                _floor.DescendSingleLevel(floor);
+                _status.DetermineNextFloor(_floor.NextLevel);
 
                 if (_queue.ReviseDownwardQueueOrder(_floor.CurrentFloor))
                     SetElevatorDownwardProjection();
@@ -306,16 +230,6 @@ namespace Sensor
             _timer.NextFloorLevel();
             _status.DetermineCurrentFloor(currentFloor);
             _status.PassedFloor(currentFloor);
-        }
-
-        private static void AscendSingleLevel(int currentFloor)
-        {
-            _floor.CurrentFloor = currentFloor + 1;
-        }
-
-        private static void DescendSingleLevel(int currentFloor)
-        {
-            _floor.CurrentFloor = currentFloor - 1;
         }
     }
 }

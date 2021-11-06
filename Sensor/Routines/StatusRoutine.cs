@@ -60,6 +60,16 @@ namespace Sensor
             Logger.Write($"Current Floor: {currentFloor}");
         }
 
+        internal void DetermineNextFloor(int nextFloor)
+        {
+            Logger.Write($"Next Floor: {nextFloor}");
+        }
+
+        internal void WaitingForAdditionalRequests()
+        {
+            Logger.Write($"Waiting on more requests to enqueue");
+        }
+
         internal void DetermineElevatorStatus(Elevator elevator)
         {
             Logger.Write($"Current Elavator State is: {elevator.State} " +

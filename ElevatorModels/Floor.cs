@@ -1,10 +1,33 @@
-﻿using System;
+﻿using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("Sensor")]
 namespace ElevatorModels
 {
     public class Floor
     {
-        public Floor()
+        private static Floor _instance;
+
+        public static Floor GetFloorInformation()
+        {
+            if (_instance == null)
+            {
+                _instance = new Floor();
+            }
+            return _instance;
+        }
+
+        static Floor()
+        {
+            _instance = new Floor();
+        }
+
+        internal void ResetForTesting()
+        {
+            CurrentFloor = 0;
+            NextLevel = 1;
+        }
+
+        private Floor()
         {
             CurrentFloorLevel = 0;
         }
@@ -40,6 +63,18 @@ namespace ElevatorModels
         }
 
         public int CurrentFloorLevel { get; set; }
-        public int DestinationFloor { get; set; }
+        public int NextLevel { get; set; }
+
+        public void AscendSingleLevel(int currentFloor)
+        {
+            CurrentFloor = currentFloor + 1;
+            NextLevel = currentFloor + 2;
+        }
+
+        public void DescendSingleLevel(int currentFloor)
+        {
+            CurrentFloor = currentFloor - 1;
+            NextLevel = currentFloor - 2;
+        }
     }
 }

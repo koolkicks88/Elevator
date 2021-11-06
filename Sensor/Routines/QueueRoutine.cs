@@ -6,11 +6,16 @@ namespace Sensor.Routines
 {
     public class QueueRoutine
     {
-
+        private static QueueRoutine _instance = new QueueRoutine();
         private readonly object _inputQueueResource = new object();
         private readonly object _dequeueResource = new object();
         private Queue<Button> UpwardQueue = new Queue<Button>();
         private Queue<Button> DownwardQueue = new Queue<Button>();
+
+        public static QueueRoutine GetQueueRoutine()
+        {
+            return _instance;
+        }
 
         public bool ReviseUpwardQueueOrder(int currentFloor)
         {

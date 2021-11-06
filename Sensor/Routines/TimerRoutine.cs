@@ -21,9 +21,5 @@ namespace Sensor.Routines
             var stopWatch = new Stopwatch();
             return stopWatch;
         }
-
-        //if( currentTime.Second <= currentTime.AddSeconds(timeToReachNextFloorLevel).Second)
-        //{
-        //}
     }
 }

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Logger;
 using Sensor;
+using Sensor.Routines;
 
 namespace Letona_Elevator
 {
@@ -10,11 +11,13 @@ namespace Letona_Elevator
     {
         public ILogger Logger { get; set; }
         public static LogicBoard LogicBoard { get; set; }
+        public static KeyPadRoutine KeyPad { get; set; }
 
         public Program()
         {
             Logger = new EventLogger();
             LogicBoard = new LogicBoard(Logger);
+            KeyPad = new KeyPadRoutine(Logger);
         }
         static void Main(string[] args)
         {
@@ -32,10 +35,11 @@ namespace Letona_Elevator
         private static void GetInputAsync(Program program)
         {
             LogicBoard.StartProcess();
+
             Task.Run(() =>
             {
-                var input = Console.In.ReadLineAsync();
-                LogicBoard.AddElevatorRequest(input.Result);
+            var input = Console.In.ReadLineAsync();
+            KeyPad.AddElevatorRequest(input.Result);
             });
         }
     }
