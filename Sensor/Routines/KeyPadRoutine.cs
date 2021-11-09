@@ -1,36 +1,30 @@
 ﻿using ElevatorModels;
 using Logger;
+using Sensor.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using static ElevatorModels.Button;
 
 namespace Sensor.Routines
 {
-    public class KeyPadRoutine
+    public class KeyPadRoutine : IKeyPadRoutine
     {
         public KeyPadRoutine(ILogger logger)
         {
             Logger = logger;
-            _status = new StatusRoutine(logger);
         }
 
-        public KeyPadRoutine(ILogger logger, Floor floor)
+        public KeyPadRoutine(ILogger logger, IQueue keyPadRoutine)
         {
             Logger = logger;
-            _floor = floor;
-            _status = new StatusRoutine(logger);
+            //_floor = floor;
             _floor.ResetForTesting();
-            _elevator.ShutDownSignal = false;
         }
 
-        private static readonly Elevator _elevator = Elevator.GetElevatorInformation();
-        private readonly Floor _floor = Floor.GetFloorInformation();
-        private static readonly QueueRoutine _queue = QueueRoutine.GetQueueRoutine();
+        public static readonly QueueRoutine _queue = QueueRoutine.GetQueueRoutine();
+        public static readonly Floor _floor = Floor.GetFloorInformation();
 
         public ILogger Logger { get; }
-        private readonly StatusRoutine _status;
         private readonly char upwardRequest = 'U';
         private readonly char downwardRequest = 'D';
         private readonly char shutdownRequest = 'Q';
@@ -39,7 +33,7 @@ namespace Sensor.Routines
         {
             CheckForShutDownSignal(input);
 
-            if (!_elevator.ShutDownSignal)
+            if (!_queue.disallowFurtherEnqueuing)
             {
                 Logger.Write("Button Pressed.. Starting Proccess");
                 Logger.Write($"Adding floor request {input} in the queue.");
@@ -49,35 +43,30 @@ namespace Sensor.Routines
 
         private void CheckForShutDownSignal(string input)
         {
-            if (input.Contains(shutdownRequest))
-            {
-                _elevator.ShutDownSignal = true;
-                _status.ShutDownRoutine();
-            }
+            if(input.Contains(shutdownRequest))
+                _queue.disallowFurtherEnqueuing = true;
         }
 
         private void AddToDesignatedQueue(string request)
         {
-            ParseRequestValues(request, out int destinationLevel, out Button button);
-
-            InsertToQueue(destinationLevel, button);
+            var button = ParseRequestValues(request);
+            InsertToQueue(button);
         }
 
-        private void ParseRequestValues(string request, out int destinationLevel, out Button button)
+        private Button ParseRequestValues(string request)
         {
-            destinationLevel = int.Parse(request
-                .Trim(new char[] { upwardRequest, downwardRequest }));
-            var action = new string(request.ToCharArray()
-                .Where(c => !char.IsDigit(c)).ToArray());
-
-            button = new Button
+            var requestButton = new Button
             {
-                ButtonPress = destinationLevel,
-                Action = action
+                ButtonPress = int.Parse(request
+                .Trim(new char[] { upwardRequest, downwardRequest })),
+                Action = new string(request.ToCharArray()
+                .Where(c => !char.IsDigit(c)).ToArray())
             };
+
+            return requestButton;
         }
 
-        private void InsertToQueue(int destinationLevel, Button button)
+        private void InsertToQueue(Button button)
         {
             var action = Enum.Parse(typeof(ButtonAction), button.Action);
             switch (action)
@@ -86,7 +75,7 @@ namespace Sensor.Routines
                     _queue.EnqueueUpwardRequest(button);
                     break;
                 case ButtonAction.Internal:
-                    CalculateInternalQueue(button, destinationLevel);
+                    CalculateInternalQueue(button);
                     break;
                 case ButtonAction.Down:
                     _queue.EnqueueDownwardRequest(button);
@@ -96,10 +85,10 @@ namespace Sensor.Routines
             }
         }
 
-        private void CalculateInternalQueue(Button button, int destinationLevel)
+        private void CalculateInternalQueue(Button button)
         {
             if (_floor.CurrentFloor <
-            destinationLevel)
+            button.ButtonPress)
                 _queue.EnqueueUpwardRequest(button);
             else
             {

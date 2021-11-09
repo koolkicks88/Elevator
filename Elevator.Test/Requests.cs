@@ -70,7 +70,7 @@ namespace Elevator.Test
         [Fact]
         public void Upward_RemovesDuplicateRequest_Success()
         {
-            var requests = new List<string> { "1", "2", "1" };
+            var requests = new List<string> { "1", "2", "1","Q" };
             foreach (var request in requests)
                 keyPad.AddElevatorRequest(request);
 

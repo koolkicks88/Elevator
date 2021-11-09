@@ -1,9 +1,0 @@
-C:\Users\mletona\source\repos\Letona_Elevator\Logger\bin\Debug\netcoreapp3.1\Logger.deps.json
-C:\Users\mletona\source\repos\Letona_Elevator\Logger\bin\Debug\netcoreapp3.1\Logger.dll
-C:\Users\mletona\source\repos\Letona_Elevator\Logger\bin\Debug\netcoreapp3.1\Logger.pdb
-C:\Users\mletona\source\repos\Letona_Elevator\Logger\obj\Debug\netcoreapp3.1\Logger.AssemblyInfoInputs.cache
-C:\Users\mletona\source\repos\Letona_Elevator\Logger\obj\Debug\netcoreapp3.1\Logger.AssemblyInfo.cs
-C:\Users\mletona\source\repos\Letona_Elevator\Logger\obj\Debug\netcoreapp3.1\Logger.csproj.CoreCompileInputs.cache
-C:\Users\mletona\source\repos\Letona_Elevator\Logger\obj\Debug\netcoreapp3.1\Logger.dll
-C:\Users\mletona\source\repos\Letona_Elevator\Logger\obj\Debug\netcoreapp3.1\Logger.pdb
-C:\Users\mletona\source\repos\Letona_Elevator\Logger\obj\Debug\netcoreapp3.1\Logger.csprojAssemblyReference.cache

@@ -11,6 +11,7 @@ namespace Sensor.Routines
         private readonly object _dequeueResource = new object();
         private Queue<Button> UpwardQueue = new Queue<Button>();
         private Queue<Button> DownwardQueue = new Queue<Button>();
+        public bool disallowFurtherEnqueuing;
 
         public static QueueRoutine GetQueueRoutine()
         {

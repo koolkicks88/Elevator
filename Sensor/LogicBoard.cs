@@ -1,34 +1,32 @@
-﻿using ElevatorModels;
-using Sensor.Routines;
+﻿using Sensor.Routines;
 using static ElevatorModels.Elevator;
 using Logger;
 using System.Threading;
+using Sensor.Interfaces;
+using ElevatorModels;
 
 namespace Sensor
 {
-    public class LogicBoard
+    public class LogicBoard : SensorBaseClass, ILogicBoard
     {
         public LogicBoard(ILogger logger)
         {
             Logger = logger;
             _status = new StatusRoutine(logger);
             _timer = new TimerRoutine();
+            _elevator = new Elevator();
         }
-
-        private static readonly Floor _floor = Floor.GetFloorInformation();
-        private static readonly Elevator _elevator = Elevator.GetElevatorInformation();
-        private static readonly QueueRoutine _queue =  QueueRoutine.GetQueueRoutine();
-
+        
+        private Elevator _elevator;
         private StatusRoutine _status;
         private readonly TimerRoutine _timer;
-
+        private readonly bool shutDownSignal;
 
         public ILogger Logger { get; }
 
-
         public void StartProcess()
         {
-            while (_queue.ActiveRequest() )//|| !_elevator.ShutDownSignal)
+            while (_queue.ActiveRequest() || ContinueFunctioning())
             {
 
                 if (_queue.UpwardPeekQueue(out var _))
@@ -48,7 +46,18 @@ namespace Sensor
                 Thread.Sleep(2000);
             }
 
+            _queue.disallowFurtherEnqueuing = false;
             Logger.Write("No remaining requests... exiting");
+        }
+
+        private bool ContinueFunctioning()
+        {
+            bool continueScanning = true;
+
+            if (shutDownSignal)
+                continueScanning = false;
+
+            return continueScanning;
         }
 
         private void ProcessUpwardQueue()
@@ -126,9 +135,8 @@ namespace Sensor
 
             for (int floor = currentFloor; floor < currentFloor + levelsToAdvance; floor++)
             {
-                LogMovementStatusAsync(floor);
+                LogMovementStatus(floor);
                 _floor.AscendSingleLevel(floor);
-                _status.DetermineNextFloor(_floor.NextLevel);
 
                 if (_queue.ReviseUpwardQueueOrder(_floor.CurrentFloor))
                     SetElevatorUpwardProjection();
@@ -145,9 +153,8 @@ namespace Sensor
 
             for (int floor = currentFloor; floor > currentFloor - levelsToAdvance; floor--)
             {
-                LogMovementStatusAsync(floor);
+                LogMovementStatus(floor);
                 _floor.DescendSingleLevel(floor);
-                _status.DetermineNextFloor(_floor.NextLevel);
 
                 if (_queue.ReviseDownwardQueueOrder(_floor.CurrentFloor))
                     SetElevatorDownwardProjection();
@@ -224,11 +231,12 @@ namespace Sensor
             _elevator.SetCurrentData(_elevator);
             _status.DetermineElevatorStatus(_elevator);
         }
-        private void LogMovementStatusAsync(int currentFloor)
+        private void LogMovementStatus(int currentFloor)
         {
             _status.NextFloor();
             _timer.NextFloorLevel();
-            _status.DetermineCurrentFloor(currentFloor);
+            _status.DetermineCurrentFloor(_floor.CurrentFloor);
+            _status.DetermineNextFloor(_floor.NextLevel);
             _status.PassedFloor(currentFloor);
         }
     }

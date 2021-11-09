@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 
 namespace Sensor.Routines
 {
@@ -10,16 +6,10 @@ namespace Sensor.Routines
     {
         private readonly int timeToReachNextFloorLevel = 3;
         private readonly int timeToStopAtDestinationFloorLevel = 1;
-
+        private readonly int milisecondsMultiplier = 1000;
            
-        internal void NextFloorLevel() => Thread.Sleep(timeToReachNextFloorLevel * 1000);
+        internal void NextFloorLevel() => Thread.Sleep(timeToReachNextFloorLevel * milisecondsMultiplier);
 
-        internal void StopAtFloorLevel() => Thread.Sleep(timeToStopAtDestinationFloorLevel * 1000);
-
-        internal Stopwatch Timer()
-        {
-            var stopWatch = new Stopwatch();
-            return stopWatch;
-        }
+        internal void StopAtFloorLevel() => Thread.Sleep(timeToStopAtDestinationFloorLevel * milisecondsMultiplier);
     }
 }

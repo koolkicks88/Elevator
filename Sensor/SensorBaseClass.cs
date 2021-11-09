@@ -1,14 +1,17 @@
-﻿using Logger;
+﻿using ElevatorModels;
+using Logger;
+using Sensor.Routines;
 
 namespace Sensor
 {
-    public class SensorBaseClass
+    public abstract class SensorBaseClass
     {
         public SensorBaseClass()
         {
-            Logger = new EventLogger();
         }
 
-        public ILogger Logger { get; set; }
+        public static readonly Floor _floor = Floor.GetFloorInformation();
+        public static readonly QueueRoutine _queue = QueueRoutine.GetQueueRoutine();
+
     }
 }

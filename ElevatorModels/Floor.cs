@@ -68,13 +68,15 @@ namespace ElevatorModels
         public void AscendSingleLevel(int currentFloor)
         {
             CurrentFloor = currentFloor + 1;
-            NextLevel = currentFloor + 2;
+            NextLevel = currentFloor == 0
+                ? 0 : currentFloor + 2;
         }
 
         public void DescendSingleLevel(int currentFloor)
         {
             CurrentFloor = currentFloor - 1;
-            NextLevel = currentFloor - 2;
+            NextLevel = currentFloor == 0 
+                ? 0 : currentFloor - 2;
         }
     }
 }
