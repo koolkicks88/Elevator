@@ -156,7 +156,7 @@ namespace Sensor
 
         private void SetElevatorUpwardProjection()
         {
-            _currentFloor = _floor.GetCurrentFloor();//todo
+            _currentFloor = _floor.GetCurrentFloor();
             if (_queue.UpwardEmptyQueue())
                 AdvanceLevels();
         }

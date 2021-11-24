@@ -30,6 +30,28 @@ namespace Elevator.Test.Routines
         }
 
         [Fact]
+        public void Constructor_NotNull()
+        {
+            Mock<IFloor> mockFloor = GetFloorMock(currentFloor: 1);
+            Mock<IQueueRoutine> mockQueue = GetQueueMock();
+            Mock<ILogger> mockLogger = new Mock<ILogger>();
+
+            var keyPad = new KeyPadRoutine(mockLogger.Object, mockQueue.Object, mockFloor.Object);
+
+            Assert.NotNull(keyPad);
+        }
+
+        [Fact]
+        public void ConstructorWithOnlyLogger_NotNull()
+        {
+            Mock<ILogger> mockLogger = new Mock<ILogger>();
+
+            var logicBoard = new KeyPadRoutine(mockLogger.Object);
+
+            Assert.NotNull(logicBoard);
+        }
+
+        [Fact]
         public void UpwardQueue_Success()
         {
             const string input = "1";

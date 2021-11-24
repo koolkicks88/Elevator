@@ -30,20 +30,9 @@ namespace Sensor
                 $"{destinationFloor} at time: {DateTime.UtcNow}");
         }
 
-        public void LeavingDetinationFloor(int destinationFloor)
-        {
-            Logger.Write($"Leaving destination floor: " +
-                $"{destinationFloor} at time: {DateTime.UtcNow}");
-        }
-
         public void DetinationFloor(int destinationFloor)
         {
             Logger.Write($"Arrive at floor: {destinationFloor} at time: {DateTime.UtcNow}");
-        }
-
-        public void Direction(string direction)
-        {
-            Logger.Write($"Elevator is currently {direction} ");
         }
 
         public void DetermineCurrentFloor(int currentFloor)
