@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using ElevatorModels;
 using Logger;
 using Sensor;
 using Sensor.Routines;
@@ -23,7 +22,8 @@ namespace Letona_Elevator
         static void Main(string[] args)
         {
             Console.WriteLine(" Welcome to Nakatomi Plaza's Elevator. Please enter whether button press is coming from inside or " +
-                "outside the elevator (e.g. 4U is coming from the outside). Press Q to exit");
+                "outside the elevator (e.g. 4U is coming from the outside). Press Q to exit." +
+                " Press M to initiate max weight routine. Press R to exit max weight routine.");
             var program = new Program();
             program.GetInput();
         }
@@ -33,10 +33,18 @@ namespace Letona_Elevator
             var exitProgram = Task.Run(() => LogicBoard.StartProcess());
             while (!exitProgram.IsCompleted)
             {
-                var input = Console.In.ReadLineAsync();
-                KeyPad.AddElevatorRequest(input.Result);
+                Insert();
                 Thread.Sleep(3000);
             }
+        }
+
+        private static void Insert()
+        {
+            var keyPad = Task.Run(() =>
+            {
+                var input = Console.In.ReadLineAsync();
+                KeyPad.AddElevatorRequest(input.Result);
+            });
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Sensor.Routines
     {
         private readonly int timeToReachNextFloorLevel = 3;
         private readonly int timeToStopAtDestinationFloorLevel = 1;
-        private readonly int timeToWaitBetweenIteration = 1;
+        private readonly int timeToWaitBetweenIteration = 3;
         private readonly int milisecondsMultiplier = 1000;
 
         public void NextFloorLevel() => Thread.Sleep(timeToReachNextFloorLevel * milisecondsMultiplier);
