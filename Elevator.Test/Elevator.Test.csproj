@@ -22,10 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Elevator\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Letona_Elevator\Letona_Elevator.csproj" />
     <ProjectReference Include="..\Sensor\Sensor.csproj" />
   </ItemGroup>

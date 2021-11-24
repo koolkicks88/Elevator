@@ -2,14 +2,17 @@
 
 namespace Sensor.Routines
 {
-    internal class TimerRoutine
+    public class TimerRoutine : ITimerRoutine
     {
         private readonly int timeToReachNextFloorLevel = 3;
         private readonly int timeToStopAtDestinationFloorLevel = 1;
+        private readonly int timeToWaitBetweenIteration = 1;
         private readonly int milisecondsMultiplier = 1000;
-           
-        internal void NextFloorLevel() => Thread.Sleep(timeToReachNextFloorLevel * milisecondsMultiplier);
 
-        internal void StopAtFloorLevel() => Thread.Sleep(timeToStopAtDestinationFloorLevel * milisecondsMultiplier);
+        public void NextFloorLevel() => Thread.Sleep(timeToReachNextFloorLevel * milisecondsMultiplier);
+
+        public void StopAtFloorLevel() => Thread.Sleep(timeToStopAtDestinationFloorLevel * milisecondsMultiplier);
+        
+        public void TimerBetweenScanning() => Thread.Sleep(timeToWaitBetweenIteration * milisecondsMultiplier);
     }
 }

@@ -1,13 +1,12 @@
 ﻿using Sensor.Routines;
 using static ElevatorModels.Elevator;
 using Logger;
-using System.Threading;
 using Sensor.Interfaces;
 using ElevatorModels;
 
 namespace Sensor
 {
-    public class LogicBoard : SensorBaseClass, ILogicBoard
+    public class LogicBoard : ILogicBoard
     {
         public LogicBoard(ILogger logger)
         {
@@ -16,11 +15,24 @@ namespace Sensor
             _timer = new TimerRoutine();
             _elevator = new Elevator();
         }
-        
+
+        public LogicBoard(ILogger logger, IQueueRoutine queue, 
+            IFloor floor, ITimerRoutine timer)
+        {
+            Logger = logger;
+            _queue = queue;
+            _floor = floor;
+            _elevator = new Elevator();
+            _status = new StatusRoutine(logger);
+            _timer = timer;
+        }
+
+        public readonly IQueueRoutine _queue = QueueRoutine.GetQueueRoutine();
+        public readonly IFloor _floor = Floor.GetFloorInformation();
         private Elevator _elevator;
         private StatusRoutine _status;
-        private readonly TimerRoutine _timer;
-        private readonly bool shutDownSignal;
+        private readonly ITimerRoutine _timer;
+        private int _currentFloor;
 
         public ILogger Logger { get; }
 
@@ -28,148 +40,184 @@ namespace Sensor
         {
             while (_queue.ActiveRequest() || ContinueFunctioning())
             {
-
                 if (_queue.UpwardPeekQueue(out var _))
-                {
-                    while(_queue.UpwardEmptyQueue())
-                        ProcessUpwardQueue();
-                }
+                    SetElevatorUpwardProjection();
 
                 if (_queue.DownwardPeekQueue(out var _))
-                {
-                    while (_queue.DownwardEmptyQueue())
-                        ProcessDownwardQueue();
-                }
+                    SetElevatorDownwardProjection();
 
                 _status.WaitingForAdditionalRequests();
                 SetIdleProperties();
-                Thread.Sleep(2000);
+                _timer.TimerBetweenScanning();
             }
 
-            _queue.disallowFurtherEnqueuing = false;
-            Logger.Write("No remaining requests... exiting");
+            _queue.DisallowFurtherEnqueuing = false;
+            _status.ShutDownRoutine();
         }
 
         private bool ContinueFunctioning()
         {
             bool continueScanning = true;
 
-            if (shutDownSignal)
+            if (_queue.DisallowFurtherEnqueuing)
                 continueScanning = false;
 
             return continueScanning;
         }
 
-        private void ProcessUpwardQueue()
+        private bool CheckForSameLevelRequest(bool upwards = true)
         {
+            bool sameLevelRequest = false;
+
+            int destinationLevel = GetDestinationLevel(upwards);
+
+            if (destinationLevel == _currentFloor
+                && _elevator.State == ElevatorState.Stop.ToString())
+            {
+                if (upwards)
+                    _queue.DequeueUpwardRequest();
+                else
+                    _queue.DequeueDowanwardRequest();
+
+                _status.SameLevelRequest(destinationLevel);
+                sameLevelRequest = true;
+            }
+
+            return sameLevelRequest;
+        }
+
+        private int GetDestinationLevel(bool upwards)
+        {
+            int destinationLevel;
+            if (upwards)
+            {
+                _queue.UpwardPeekQueue(out var currentRequest);
+                destinationLevel = currentRequest.ButtonPress;
+            }
+            else
+            {
+                _queue.DownwardPeekQueue(out var currentRequest);
+                destinationLevel = currentRequest.ButtonPress;
+            }
+
+            return destinationLevel;
+        }
+
+        private bool EnqueueUpwardMissedFloorRequest()
+        {
+            bool missedFloorRequest = false;
             _queue.UpwardPeekQueue(out var currentRequest);
 
-            var destination = currentRequest.ButtonPress;
-            if (destination > _floor.CurrentFloorLevel)
-                StartUpwardMotion();
-            else
-                StartDownwardMotion();
+            if (currentRequest.ButtonPress < _currentFloor
+                && _elevator.Direction == ElevatorDirection.Up.ToString())
+            {
+                DequeuAndReorderDownwardQueue(currentRequest);
+                missedFloorRequest = true;
+            }
+
+            return missedFloorRequest;
         }
 
-        private void ProcessDownwardQueue()
+        private bool EnqueueDownwardMissedFloorRequest()
         {
-             _queue.DownwardPeekQueue(out var currentRequest);
+            bool missedFloorRequest = false;
+            _queue.DownwardPeekQueue(out var currentRequest);
 
-            var destination = currentRequest.ButtonPress;
-            if (destination < _floor.CurrentFloorLevel)
-                StartDownwardMotion();
-            else
-                StartDownwardMotion();
+            if (currentRequest.ButtonPress > _currentFloor
+                   && _elevator.Direction == ElevatorDirection.Down.ToString())
+            {
+                DequeAndReorderUpwardQueue(currentRequest);
+                missedFloorRequest = true;
+            }
+
+            return missedFloorRequest;
         }
 
-        internal void StartDownwardMotion()
+        private void DequeAndReorderUpwardQueue(Button currentRequest)
         {
-            SetDownwardProperties();
-
-            SetElevatorDownwardProjection();
+            _queue.DequeueDowanwardRequest();
+            _queue.EnqueueUpwardRequest(currentRequest);
+            _queue.ReviseUpwardQueueOrder(_currentFloor);
         }
 
-        internal void StartUpwardMotion()
+        private void DequeuAndReorderDownwardQueue(Button currentRequest)
         {
-            SetUpwardProperties();
-
-            SetElevatorUpwardProjection();
+            _queue.DequeueUpwardRequest();
+            _queue.EnqueueDownwardRequest(currentRequest);
+            _queue.ReviseDownwardQueueOrder(_currentFloor);
         }
 
         private void SetElevatorDownwardProjection()
         {
-            int levelsToAscend = SetLevelsToDescend();
-
-            if (levelsToAscend == _floor.CurrentFloor)
-                CheckForDownwardDestination(levelsToAscend);
-
-            DescendLevels(levelsToAscend);
+            _currentFloor = _floor.GetCurrentFloor();
+            if (_queue.DownwardEmptyQueue())
+                DescendLevels();
         }
 
         private void SetElevatorUpwardProjection()
         {
-            int levelsToAscend = SetLevelsToAscend();
-
-            if (levelsToAscend == _floor.CurrentFloor)
-                CheckForUpwardDestination(levelsToAscend);
-
-            AdvanceLevels(levelsToAscend);
+            _currentFloor = _floor.GetCurrentFloor();//todo
+            if (_queue.UpwardEmptyQueue())
+                AdvanceLevels();
         }
 
-        private int SetLevelsToDescend()
+        private void AdvanceLevels()
         {
-            _queue.DownwardPeekQueue(out var currentButton);
-            return currentButton.ButtonPress;
-        }
-
-        private int SetLevelsToAscend()
-        {
-            _queue.UpwardPeekQueue(out var currentButton);
-            return currentButton.ButtonPress;
-        }
-
-        private void AdvanceLevels( int levelsToAscend)
-        {
-            var currentFloor = _floor.CurrentFloor;
-            var levelsToAdvance = levelsToAscend - currentFloor;
-
-            for (int floor = currentFloor; floor < currentFloor + levelsToAdvance; floor++)
+            while (_queue.UpwardEmptyQueue())
             {
-                LogMovementStatus(floor);
-                _floor.AscendSingleLevel(floor);
+                if (CheckForSameLevelRequest())
+                    continue;
 
-                if (_queue.ReviseUpwardQueueOrder(_floor.CurrentFloor))
-                    SetElevatorUpwardProjection();
+                SetUpwardProperties();
 
-                CheckForUpwardDestination(floor);
+                if (EnqueueUpwardMissedFloorRequest())
+                    continue;
+
+                LogMovementStatus(_currentFloor);
+                _floor.AscendSingleLevel(_currentFloor);
+                _currentFloor = _floor.GetCurrentFloor();
+
+                _queue.ReviseUpwardQueueOrder(_currentFloor);
+
+                if (_queue.UpwardPeekQueue(out var _))
+                    CheckForUpwardDestination();
             }
         }
 
-        private void DescendLevels(int levelsToDescend)
+        private void DescendLevels()
         {
-            var currentFloor = _floor.CurrentFloor;
-
-            var levelsToAdvance = currentFloor - levelsToDescend;
-
-            for (int floor = currentFloor; floor > currentFloor - levelsToAdvance; floor--)
+            while (_queue.DownwardEmptyQueue())
             {
-                LogMovementStatus(floor);
-                _floor.DescendSingleLevel(floor);
+                if (CheckForSameLevelRequest(upwards:false))
+                    continue;
 
-                if (_queue.ReviseDownwardQueueOrder(_floor.CurrentFloor))
-                    SetElevatorDownwardProjection();
+                SetDownwardProperties();
 
-                CheckForDownwardDestination(floor);
+                if (EnqueueDownwardMissedFloorRequest())
+                    continue;
+
+                LogMovementStatus(_currentFloor);
+                _floor.DescendSingleLevel(_currentFloor);
+                _currentFloor = _floor.GetCurrentFloor();
+
+                _queue.ReviseDownwardQueueOrder(_currentFloor);
+
+                if (_queue.DownwardPeekQueue(out var _))
+                    CheckForDownwardDestination();
             }
         }
 
-        private void CheckForUpwardDestination(int floor)
+        private bool CheckForUpwardDestination()
         {
             _queue.UpwardPeekQueue(out var button);
             var currentDestination = button.ButtonPress;
 
-            if (_floor.CurrentFloor == currentDestination)
+            if (_currentFloor == currentDestination) { 
                 DequeueCurrentUpwardRequest(currentDestination);
+                return true;
+            }
+
+            return false;
         }
 
         private void DequeueCurrentUpwardRequest(int floor)
@@ -178,12 +226,12 @@ namespace Sensor
             _queue.DequeueUpwardRequest();
         }
 
-        private void CheckForDownwardDestination(int floor)
+        private void CheckForDownwardDestination()
         {
             _queue.DownwardPeekQueue(out var button);
             var currentDestination = button.ButtonPress;
 
-            if (_floor.CurrentFloor == currentDestination)
+            if (_currentFloor == currentDestination)
                 DequeueCurrentDownwardRequests(currentDestination);
         }
 
@@ -233,11 +281,25 @@ namespace Sensor
         }
         private void LogMovementStatus(int currentFloor)
         {
+            var nextLevel = DeterminNextLevel(currentFloor);
+
             _status.NextFloor();
             _timer.NextFloorLevel();
-            _status.DetermineCurrentFloor(_floor.CurrentFloor);
-            _status.DetermineNextFloor(_floor.NextLevel);
+            _status.DetermineCurrentFloor(_currentFloor);
+            _status.DetermineNextFloor(nextLevel == 13 ? 12 
+                : nextLevel == -1 ? 0 : nextLevel);
             _status.PassedFloor(currentFloor);
+        }
+
+        private int DeterminNextLevel(int currentFloor)
+        {
+            int next;
+            if (_elevator.Direction == ElevatorDirection.Up.ToString())
+               next = currentFloor == 0 ? 1 : currentFloor + 1;
+            else 
+                next = currentFloor == 12 ? 11 : currentFloor - 1;
+
+            return next;
         }
     }
 }

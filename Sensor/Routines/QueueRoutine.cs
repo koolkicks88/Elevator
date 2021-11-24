@@ -4,17 +4,22 @@ using System.Linq;
 
 namespace Sensor.Routines
 {
-    public class QueueRoutine
+    public class QueueRoutine : IQueueRoutine
     {
-        private static QueueRoutine _instance = new QueueRoutine();
         private readonly object _inputQueueResource = new object();
         private readonly object _dequeueResource = new object();
         private Queue<Button> UpwardQueue = new Queue<Button>();
         private Queue<Button> DownwardQueue = new Queue<Button>();
-        public bool disallowFurtherEnqueuing;
+        public bool DisallowFurtherEnqueuing { get; set; }
+
+        private static QueueRoutine _instance = new QueueRoutine();
 
         public static QueueRoutine GetQueueRoutine()
         {
+            if (_instance == null)
+            {
+                _instance = new QueueRoutine();
+            }
             return _instance;
         }
 
@@ -28,13 +33,7 @@ namespace Sensor.Routines
             if (!inOder)
             {
                 revised = true;
-                var elegibleForUpwardQueue = queueCopy
-                    .Where(request => request.ButtonPress >= currentFloor);
-
-                if (elegibleForUpwardQueue != null)
-                    ResetUpwardQueueOrder();
-                else
-                    ResetDownwardQueueOrder();
+                ResetUpwardQueueOrder();
             }
 
             return revised;
@@ -50,13 +49,7 @@ namespace Sensor.Routines
             if (!inOder)
             {
                 revised = true;
-                var elegibleForDownwardQueue = queueCopy
-                    .Where(request => request.ButtonPress <= currentFloor);
-
-                if (elegibleForDownwardQueue != null)
-                    ResetDownwardQueueOrder();
-                else
-                    ResetUpwardQueueOrder();
+                ResetDownwardQueueOrder();
             }
 
             return revised;
@@ -65,7 +58,10 @@ namespace Sensor.Routines
         private void ResetDownwardQueueOrder()
         {
             var downwardElememts = new Queue<Button>(DownwardQueue.ToArray()
-                                      .OrderByDescending(floor => floor.ButtonPress).ToList());
+                                        .GroupBy(button => button.ButtonPress)
+                                        .Select(group => group.First())
+                                        .OrderByDescending(floor => floor.ButtonPress)
+                                        .ToList());
             lock (_inputQueueResource)
             {
                 DownwardQueue = downwardElememts;
@@ -76,20 +72,24 @@ namespace Sensor.Routines
         {
             var upwardElememts = new Queue<Button>(UpwardQueue
                                 .ToArray().GroupBy(button => button.ButtonPress)
-                                .Select( group => group.First())
+                                .Select(group => group.First())
                                 .OrderBy(floor => floor.ButtonPress)
                                 .ToList());
 
             lock (_inputQueueResource)
             {
                 UpwardQueue = upwardElememts;
-
             }
         }
 
-        public Queue<Button> CurrentQueue()
+        public Queue<Button> CurrentUpwardQueue()
         {
             return UpwardQueue;
+        }
+
+        public Queue<Button> CurrentDownwardQueue()
+        {
+            return DownwardQueue;
         }
 
         public void EnqueueUpwardRequest(Button button)
@@ -132,8 +132,8 @@ namespace Sensor.Routines
         public bool UpwardEmptyQueue() => UpwardQueue.Any();
 
         public bool DownwardPeekQueue(out Button button)
-        { 
-            if(DownwardQueue.Count >= 1)
+        {
+            if (DownwardQueue.Count >= 1)
             {
                 DownwardQueue.TryPeek(out var el);
                 button = el;
@@ -145,7 +145,7 @@ namespace Sensor.Routines
         }
         public bool UpwardPeekQueue(out Button button)
         {
-            if(UpwardQueue.Count >= 1)
+            if (UpwardQueue.Count >= 1)
             {
                 UpwardQueue.TryPeek(out var el);
                 button = el;

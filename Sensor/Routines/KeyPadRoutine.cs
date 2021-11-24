@@ -1,7 +1,6 @@
 ﻿using ElevatorModels;
 using Logger;
 using Sensor.Interfaces;
-using System;
 using System.Linq;
 using static ElevatorModels.Button;
 
@@ -9,48 +8,95 @@ namespace Sensor.Routines
 {
     public class KeyPadRoutine : IKeyPadRoutine
     {
+
         public KeyPadRoutine(ILogger logger)
         {
             Logger = logger;
+            _status = new StatusRoutine(logger);
         }
 
-        public KeyPadRoutine(ILogger logger, IQueue keyPadRoutine)
+        public KeyPadRoutine(ILogger logger, IQueueRoutine queue, IFloor floor)
         {
             Logger = logger;
-            //_floor = floor;
-            _floor.ResetForTesting();
+            _queue = queue;
+            _floor = floor;
+            _status = new StatusRoutine(logger);
         }
 
-        public static readonly QueueRoutine _queue = QueueRoutine.GetQueueRoutine();
-        public static readonly Floor _floor = Floor.GetFloorInformation();
+        public readonly IQueueRoutine _queue = QueueRoutine.GetQueueRoutine();
+        public readonly IFloor _floor = Floor.GetFloorInformation();
+        private readonly StatusRoutine _status;
 
         public ILogger Logger { get; }
-        private readonly char upwardRequest = 'U';
-        private readonly char downwardRequest = 'D';
-        private readonly char shutdownRequest = 'Q';
+
+        const char upwardRequest = 'U';
+        const char downwardRequest = 'D';
+        const char shutdownRequest = 'Q';
+        const char maxWeight = 'M';
+        const char resetMaxWeight = 'R';
+        const int LowestLevel = 0;
+        const int HighestLevel = 12;
+        private bool maxWeightRoutine = false;
 
         public void AddElevatorRequest(string input)
         {
             CheckForShutDownSignal(input);
 
-            if (!_queue.disallowFurtherEnqueuing)
+            if (!CheckForMaxWeighRoutine(input))
             {
-                Logger.Write("Button Pressed.. Starting Proccess");
-                Logger.Write($"Adding floor request {input} in the queue.");
-                AddToDesignatedQueue(input);
+                if (!_queue.DisallowFurtherEnqueuing)
+                {
+                    _status.ButtonPressed();
+                    ValidateRequest(input);
+                }
             }
+        }
+
+        private bool CheckForMaxWeighRoutine(string input)
+        {
+            bool containsKeyValue = false;
+
+            if (input.Contains(maxWeight))
+            {
+                containsKeyValue = true;
+                maxWeightRoutine = true;
+                _status.MaxWeighRoutine(true);
+            }
+            else if (input.Contains(resetMaxWeight))
+            {
+                containsKeyValue = true;
+                maxWeightRoutine = false;
+                _status.MaxWeighRoutine(false);
+            }
+
+            return containsKeyValue;
         }
 
         private void CheckForShutDownSignal(string input)
         {
             if(input.Contains(shutdownRequest))
-                _queue.disallowFurtherEnqueuing = true;
+                _queue.DisallowFurtherEnqueuing = true;
         }
 
-        private void AddToDesignatedQueue(string request)
+        private void ValidateRequest(string request)
         {
             var button = ParseRequestValues(request);
-            InsertToQueue(button);
+
+            if (button.ButtonPress >= LowestLevel && button.ButtonPress <= HighestLevel)
+                RouteToQueue(button);
+            else
+                _status.InvalidIncomingRequest(button.ButtonPress, LowestLevel, HighestLevel);
+        }
+
+        private void RouteToQueue(Button button)
+        {
+            if (!maxWeightRoutine)
+                InsertToQueue(button);
+            else if (maxWeightRoutine && button.Action
+                == ButtonAction.Internal.ToString())
+                InsertToQueue(button);
+            else
+                _status.RejectedOutsideRequest(button);
         }
 
         private Button ParseRequestValues(string request)
@@ -68,25 +114,8 @@ namespace Sensor.Routines
 
         private void InsertToQueue(Button button)
         {
-            var action = Enum.Parse(typeof(ButtonAction), button.Action);
-            switch (action)
-            {
-                case ButtonAction.Up:
-                    _queue.EnqueueUpwardRequest(button);
-                    break;
-                case ButtonAction.Internal:
-                    CalculateInternalQueue(button);
-                    break;
-                case ButtonAction.Down:
-                    _queue.EnqueueDownwardRequest(button);
-                    break;
-                default:
-                    throw new Exception("incorrect button action type");
-            }
-        }
+            _status.AddingRequestToQueue(button);
 
-        private void CalculateInternalQueue(Button button)
-        {
             if (_floor.CurrentFloor <
             button.ButtonPress)
                 _queue.EnqueueUpwardRequest(button);

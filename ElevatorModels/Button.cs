@@ -2,7 +2,7 @@
 
 namespace ElevatorModels
 {
-    public class Button : IComparable<Button>
+    public class Button
     {
         public int ButtonPress { get; set; }
 

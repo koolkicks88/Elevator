@@ -1,9 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Sensor")]
 namespace ElevatorModels
 {
-    public class Floor
+    public class Floor : IFloor
     {
         private static Floor _instance;
 
@@ -14,17 +13,6 @@ namespace ElevatorModels
                 _instance = new Floor();
             }
             return _instance;
-        }
-
-        static Floor()
-        {
-            _instance = new Floor();
-        }
-
-        internal void ResetForTesting()
-        {
-            CurrentFloor = 0;
-            NextLevel = 1;
         }
 
         private Floor()
@@ -62,6 +50,11 @@ namespace ElevatorModels
             }
         }
 
+        public int GetCurrentFloor()
+        {
+            return CurrentFloor;
+        }
+
         public int CurrentFloorLevel { get; set; }
         public int NextLevel { get; set; }
 
@@ -69,14 +62,14 @@ namespace ElevatorModels
         {
             CurrentFloor = currentFloor + 1;
             NextLevel = currentFloor == 0
-                ? 0 : currentFloor + 2;
+                ? 1 : currentFloor + 2;
         }
 
         public void DescendSingleLevel(int currentFloor)
         {
             CurrentFloor = currentFloor - 1;
-            NextLevel = currentFloor == 0 
-                ? 0 : currentFloor - 2;
+            NextLevel = currentFloor == 12
+                ? 11 : currentFloor - 2;
         }
     }
 }
