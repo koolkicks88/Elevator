@@ -12,13 +12,13 @@ namespace Letona_Elevator
     {
         public ILogger Logger { get; set; }
         public static LogicBoard LogicBoard { get; set; }
-        public static KeyPadRoutine KeyPad { get; set; } 
+        public static KeyPad KeyPad { get; set; } 
 
         public Program()
         {
             Logger = new EventLogger();
             LogicBoard = new LogicBoard(Logger);
-            KeyPad = new KeyPadRoutine(Logger);
+            KeyPad = new KeyPad(Logger);
         }
         static void Main(string[] args)
         {
