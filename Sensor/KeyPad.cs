@@ -6,16 +6,16 @@ using static ElevatorModels.Button;
 
 namespace Sensor.Routines
 {
-    public class KeyPadRoutine : IKeyPadRoutine
+    public class KeyPad : IKeyPad
     {
 
-        public KeyPadRoutine(ILogger logger)
+        public KeyPad(ILogger logger)
         {
             Logger = logger;
             _status = new StatusRoutine(logger);
         }
 
-        public KeyPadRoutine(ILogger logger, IQueueRoutine queue, IFloor floor)
+        public KeyPad(ILogger logger, IQueueRoutine queue, IFloor floor)
         {
             Logger = logger;
             _queue = queue;

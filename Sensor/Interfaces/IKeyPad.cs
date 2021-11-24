@@ -1,6 +1,6 @@
 ﻿namespace Sensor.Interfaces
 {
-    public interface IKeyPadRoutine
+    public interface IKeyPad
     {
         void AddElevatorRequest(string input);
     }

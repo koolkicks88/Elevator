@@ -7,11 +7,11 @@ using FluentAssertions;
 
 namespace Elevator.Test.Routines
 {
-    public class KeyPadRoutinesTest
+    public class KeyPadTest
     {
         private TestLogger logger;
 
-        public KeyPadRoutinesTest()
+        public KeyPadTest()
         {
             logger = new TestLogger();
         }
@@ -59,7 +59,7 @@ namespace Elevator.Test.Routines
             Mock<IFloor> mockFloor = GetFloorMock(currentFloor: 0);
             Mock<IQueueRoutine> mockQueue = GetQueueMock();
 
-            var keyPad = new KeyPadRoutine(logger, mockQueue.Object, mockFloor.Object);
+            var keyPad = new KeyPad(logger, mockQueue.Object, mockFloor.Object);
             keyPad.AddElevatorRequest(input);
 
             mockQueue.Verify(mockQueue => mockQueue.EnqueueUpwardRequest(It.IsAny<Button>()), Times.Once);
@@ -73,7 +73,7 @@ namespace Elevator.Test.Routines
             Mock<IFloor> mockFloor = GetFloorMock(currentFloor: 1);
             Mock<IQueueRoutine> mockQueue = GetQueueMock();
 
-            var keyPad = new KeyPadRoutine(logger, mockQueue.Object, mockFloor.Object);
+            var keyPad = new KeyPad(logger, mockQueue.Object, mockFloor.Object);
             keyPad.AddElevatorRequest(input);
 
             mockQueue.Verify(mockQueue => mockQueue.EnqueueDownwardRequest(It.IsAny<Button>()), Times.Once);
@@ -87,7 +87,7 @@ namespace Elevator.Test.Routines
             Mock<IFloor> mockFloor = GetFloorMock(currentFloor: 1);
             Mock<IQueueRoutine> mockQueue = GetQueueMock();
 
-            var keyPad = new KeyPadRoutine(logger, mockQueue.Object, mockFloor.Object);
+            var keyPad = new KeyPad(logger, mockQueue.Object, mockFloor.Object);
             keyPad.AddElevatorRequest(input);
 
             mockQueue.Verify(mockQueue => mockQueue.EnqueueDownwardRequest(It.IsAny<Button>()), Times.Once);
@@ -101,7 +101,7 @@ namespace Elevator.Test.Routines
             Mock<IFloor> mockFloor = GetFloorMock(currentFloor: 0);
             Mock<IQueueRoutine> mockQueue = GetQueueMock();
 
-            var keyPad = new KeyPadRoutine(logger, mockQueue.Object, mockFloor.Object);
+            var keyPad = new KeyPad(logger, mockQueue.Object, mockFloor.Object);
             keyPad.AddElevatorRequest(input);
 
             mockQueue.Verify(mockQueue => mockQueue.EnqueueUpwardRequest(It.IsAny<Button>()), Times.Once);
@@ -116,7 +116,7 @@ namespace Elevator.Test.Routines
             Mock<IFloor> mockFloor = GetFloorMock(currentFloor: 0);
             Mock<IQueueRoutine> mockQueue = GetQueueMock(disallowEnqueue);
             
-            var keyPad = new KeyPadRoutine(logger, mockQueue.Object, mockFloor.Object);
+            var keyPad = new KeyPad(logger, mockQueue.Object, mockFloor.Object);
             keyPad.AddElevatorRequest(input);
 
             mockQueue.Verify(mockQueue => mockQueue.EnqueueUpwardRequest(It.IsAny<Button>()), Times.Never);
@@ -130,7 +130,7 @@ namespace Elevator.Test.Routines
             Mock<IFloor> mockFloor = GetFloorMock(currentFloor: 0);
             Mock<IQueueRoutine> mockQueue = GetQueueMock();
 
-            var keyPad = new KeyPadRoutine(logger, mockQueue.Object, mockFloor.Object);
+            var keyPad = new KeyPad(logger, mockQueue.Object, mockFloor.Object);
             keyPad.AddElevatorRequest(input);
 
             keyPad.AddElevatorRequest("1D");
@@ -146,7 +146,7 @@ namespace Elevator.Test.Routines
             Mock<IFloor> mockFloor = GetFloorMock(currentFloor: 0);
             Mock<IQueueRoutine> mockQueue = GetQueueMock();
 
-            var keyPad = new KeyPadRoutine(logger, mockQueue.Object, mockFloor.Object);
+            var keyPad = new KeyPad(logger, mockQueue.Object, mockFloor.Object);
             keyPad.AddElevatorRequest(input);
 
             keyPad.AddElevatorRequest("1");
@@ -161,7 +161,7 @@ namespace Elevator.Test.Routines
             Mock<IFloor> mockFloor = GetFloorMock(currentFloor: 2);
             Mock<IQueueRoutine> mockQueue = GetQueueMock();
 
-            var keyPad = new KeyPadRoutine(logger, mockQueue.Object, mockFloor.Object);
+            var keyPad = new KeyPad(logger, mockQueue.Object, mockFloor.Object);
             keyPad.AddElevatorRequest(input);
 
             keyPad.AddElevatorRequest("R");
@@ -178,7 +178,7 @@ namespace Elevator.Test.Routines
             Mock<IFloor> mockFloor = GetFloorMock(currentFloor: 0);
             Mock<IQueueRoutine> mockQueue = GetQueueMock();
 
-            var keyPad = new KeyPadRoutine(logger, mockQueue.Object, mockFloor.Object);
+            var keyPad = new KeyPad(logger, mockQueue.Object, mockFloor.Object);
             keyPad.AddElevatorRequest(input);
 
             logger.Message.Should().Contain("cannot be completed");
@@ -192,7 +192,7 @@ namespace Elevator.Test.Routines
             Mock<IFloor> mockFloor = GetFloorMock(currentFloor: 0);
             Mock<IQueueRoutine> mockQueue = GetQueueMock();
 
-            var keyPad = new KeyPadRoutine(logger, mockQueue.Object, mockFloor.Object);
+            var keyPad = new KeyPad(logger, mockQueue.Object, mockFloor.Object);
             keyPad.AddElevatorRequest(input);
 
             logger.Message.Should().Contain("cannot be completed");

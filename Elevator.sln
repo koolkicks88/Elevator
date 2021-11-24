@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31728.308
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Letona_Elevator", "Letona_Elevator\Letona_Elevator.csproj", "{B492FD84-5C24-4FB9-989A-9DBCCAD7EA3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elevator", "Letona_Elevator\Elevator.csproj", "{B492FD84-5C24-4FB9-989A-9DBCCAD7EA3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elevator.Test", "Elevator.Test\Elevator.Test.csproj", "{37FB7B49-1606-4634-94A1-32AA411528FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elevator.Test", "Elevator.Test\Elevator.Test.csproj", "{37FB7B49-1606-4634-94A1-32AA411528FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Logger\Logger.csproj", "{642AF96A-14A6-4525-9635-D515B6C7159F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logger", "Logger\Logger.csproj", "{642AF96A-14A6-4525-9635-D515B6C7159F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sensor", "Sensor\Sensor.csproj", "{3DFEE94F-2F9C-457A-B821-33FCB9D5A55E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sensor", "Sensor\Sensor.csproj", "{3DFEE94F-2F9C-457A-B821-33FCB9D5A55E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElevatorModels", "ElevatorModels\ElevatorModels.csproj", "{332FAB69-CEB9-47A3-B8C7-5259590E7B9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElevatorModels", "ElevatorModels\ElevatorModels.csproj", "{332FAB69-CEB9-47A3-B8C7-5259590E7B9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
