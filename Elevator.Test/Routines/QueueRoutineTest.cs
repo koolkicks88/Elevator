@@ -99,6 +99,37 @@ namespace Elevator.Test.Routines
             button.Should().BeNull();
         }
 
+
+        [Fact]
+        public void ActiveRequst_NotEmpty()
+        {
+            EnqueueSamples(queue, firstPressedValue: 1, secondPressedValue: 2, upwardQueue: false);
+
+            queue.ActiveRequest().Should().BeTrue();
+        }
+
+        [Fact]
+        public void Enqueue_Downward_NotEmpty()
+        {
+            var button = new Button { Action = ButtonAction.Internal.ToString(), ButtonPress = 1 };
+           
+            queue.EnqueueDownwardRequest(button);
+
+            queue.DownwardPeekQueue(out var request);
+            request.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Enqueue_Upward_NotEmpty()
+        {
+            var button = new Button { Action = ButtonAction.Internal.ToString(), ButtonPress = 1 };
+
+            queue.EnqueueUpwardRequest(button);
+
+            queue.UpwardPeekQueue(out var request);
+            request.Should().NotBeNull();
+        }
+
         private void EnqueueSamples(QueueRoutine queue, int firstPressedValue,
             int secondPressedValue, bool upwardQueue = true)
         {

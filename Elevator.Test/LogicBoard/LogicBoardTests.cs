@@ -8,7 +8,6 @@ using Sensor.Routines;
 using ElevatorModels;
 using Moq;
 using static ElevatorModels.Button;
-using System.Threading.Tasks;
 
 namespace Elevator.Test
 {
@@ -89,6 +88,32 @@ namespace Elevator.Test
         }
 
         [Fact]
+        public void Constructor_NotNull()
+        {
+            const int destinationLevel = 0;
+            var button = new Button { Action = ButtonAction.Down.ToString(), ButtonPress = destinationLevel };
+            Mock<IFloor> mockFloor = MockDescending(currentFloor: 1, destinationLevel);
+            Mock<IQueueRoutine> mockQueue = MockDescendingQueue(button);
+            Mock<ITimerRoutine> timer = MockTimerRoutine();
+            Mock<ILogger> mockLogger = new Mock<ILogger>();
+
+            var logicBoard = new LogicBoard(mockLogger.Object, mockQueue.Object,
+                mockFloor.Object, timer.Object);
+            
+            Assert.NotNull(logicBoard);
+        }
+
+        [Fact]
+        public void ConstructorWithOnlyLogger_NotNull()
+        {
+            Mock<ILogger> mockLogger = new Mock<ILogger>();
+
+            var logicBoard = new LogicBoard(mockLogger.Object);
+
+            Assert.NotNull(logicBoard);
+        }
+
+        [Fact]
         public void Downward_DescendLevel_Success()
         {
             const int destinationLevel = 0;
@@ -123,7 +148,7 @@ namespace Elevator.Test
         }
 
         [Fact]
-        public void Upward_ReviseQueue_SuccessAsync()
+        public void Upward_ReviseQueue_Success()
         {
             const int destinationLevel = 1;
             var button = new Button { Action = ButtonAction.Down.ToString(), ButtonPress = destinationLevel };
@@ -140,7 +165,7 @@ namespace Elevator.Test
         }
 
         [Fact]
-        public void Upward_RequestPassedCurrentLevel_DequeueAndReviseQueue_SuccessAsync()
+        public void Upward_RequestPassedCurrentLevel_DequeueAndReviseQueue_Success()
         {
             const int destinationLevel = 1;
             var button = new Button { Action = ButtonAction.Down.ToString(), ButtonPress = destinationLevel };
@@ -158,7 +183,7 @@ namespace Elevator.Test
         }
 
         [Fact]
-        public void Downward_RequestPassedCurrentLevel_DequeueAndReviseQueue_SuccessAsync()
+        public void Downward_RequestPassedCurrentLevel_DequeueAndReviseQueue_Success()
         {
             const int destinationLevel = 3;
             var button = new Button { Action = ButtonAction.Down.ToString(), ButtonPress = destinationLevel };
@@ -176,7 +201,7 @@ namespace Elevator.Test
         }
 
         [Fact]
-        public void Downward_SameLevelRequest_DequeueAndReviseQueue_SuccessAsync()
+        public void Downward_SameLevelRequest_DequeueAndReviseQueue_Success()
         {
             const int destinationLevel = 2;
             var button = new Button { Action = ButtonAction.Down.ToString(), ButtonPress = destinationLevel };
@@ -192,7 +217,7 @@ namespace Elevator.Test
         }
 
         [Fact]
-        public void Upward_SameLevelRequest_DequeueAndReviseQueue_SuccessAsync()
+        public void Upward_SameLevelRequest_DequeueAndReviseQueue_Success()
         {
             const int destinationLevel = 2;
             var button = new Button { Action = ButtonAction.Down.ToString(), ButtonPress = destinationLevel };
