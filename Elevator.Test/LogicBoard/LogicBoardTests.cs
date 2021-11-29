@@ -35,7 +35,7 @@ namespace Elevator.Test
             mockQueue.Setup(c => c.EnqueueUpwardRequest(button));
             mockQueue.SetupSequence(c => c.ActiveRequest()).Returns(true).Returns(false);
             mockQueue.Setup(c => c.UpwardPeekQueue(out button)).Returns(true);
-            mockQueue.SetupSequence(c => c.UpwardEmptyQueue()).Returns(true).Returns(true).Returns(false);
+            mockQueue.SetupSequence(c => c.UpwardEmptyQueue()).Returns(true).Returns(false);
             mockQueue.Setup(c => c.DisallowFurtherEnqueuing).Returns(true);
             mockQueue.Setup(c => c.ReviseUpwardQueueOrder(It.IsAny<int>())).Returns(reviseQueue);
             return mockQueue;
@@ -46,7 +46,7 @@ namespace Elevator.Test
             Mock<IQueueRoutine> mockQueue = new Mock<IQueueRoutine>();
             mockQueue.SetupSequence(c => c.ActiveRequest()).Returns(true).Returns(false);
             mockQueue.Setup(c => c.DownwardPeekQueue(out button)).Returns(true);
-            mockQueue.SetupSequence(c => c.DownwardEmptyQueue()).Returns(true).Returns(true).Returns(false);
+            mockQueue.SetupSequence(c => c.DownwardEmptyQueue()).Returns(true).Returns(false);
             mockQueue.Setup(c => c.DisallowFurtherEnqueuing).Returns(true);
             mockQueue.Setup(c => c.ReviseDownwardQueueOrder(It.IsAny<int>())).Returns(reviseQueue);
             mockQueue.Setup(c => c.EnqueueDownwardRequest(button));
