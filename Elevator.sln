@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elevator", "Letona_Elevator\Elevator.csproj", "{B492FD84-5C24-4FB9-989A-9DBCCAD7EA3C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elevator.Test", "Elevator.Test\Elevator.Test.csproj", "{37FB7B49-1606-4634-94A1-32AA411528FD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logger", "Logger\Logger.csproj", "{642AF96A-14A6-4525-9635-D515B6C7159F}"
@@ -13,16 +11,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sensor", "Sensor\Sensor.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElevatorModels", "ElevatorModels\ElevatorModels.csproj", "{332FAB69-CEB9-47A3-B8C7-5259590E7B9C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elevator", "Elevator\Elevator.csproj", "{CAAF1BCA-37D8-4189-8AB0-5665E06CAE21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B492FD84-5C24-4FB9-989A-9DBCCAD7EA3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B492FD84-5C24-4FB9-989A-9DBCCAD7EA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B492FD84-5C24-4FB9-989A-9DBCCAD7EA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B492FD84-5C24-4FB9-989A-9DBCCAD7EA3C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{37FB7B49-1606-4634-94A1-32AA411528FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{37FB7B49-1606-4634-94A1-32AA411528FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37FB7B49-1606-4634-94A1-32AA411528FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{332FAB69-CEB9-47A3-B8C7-5259590E7B9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{332FAB69-CEB9-47A3-B8C7-5259590E7B9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{332FAB69-CEB9-47A3-B8C7-5259590E7B9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAAF1BCA-37D8-4189-8AB0-5665E06CAE21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAAF1BCA-37D8-4189-8AB0-5665E06CAE21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAAF1BCA-37D8-4189-8AB0-5665E06CAE21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAAF1BCA-37D8-4189-8AB0-5665E06CAE21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
