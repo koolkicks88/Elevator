@@ -36,7 +36,7 @@ namespace Elevator.Test.Routines
             Mock<IQueueRoutine> mockQueue = GetQueueMock();
             Mock<ILogger> mockLogger = new Mock<ILogger>();
 
-            var keyPad = new KeyPadRoutine(mockLogger.Object, mockQueue.Object, mockFloor.Object);
+            var keyPad = new KeyPad(mockLogger.Object, mockQueue.Object, mockFloor.Object);
 
             Assert.NotNull(keyPad);
         }
@@ -46,7 +46,7 @@ namespace Elevator.Test.Routines
         {
             Mock<ILogger> mockLogger = new Mock<ILogger>();
 
-            var logicBoard = new KeyPadRoutine(mockLogger.Object);
+            var logicBoard = new KeyPad(mockLogger.Object);
 
             Assert.NotNull(logicBoard);
         }
