@@ -29,8 +29,8 @@ namespace Sensor
 
         public readonly IQueueRoutine _queue = QueueRoutine.GetQueueRoutine();
         public readonly IFloor _floor = Floor.GetFloorInformation();
-        private Elevator _elevator;
-        private StatusRoutine _status;
+        private readonly Elevator _elevator;
+        private readonly StatusRoutine _status;
         private readonly ITimerRoutine _timer;
         private int _currentFloor;
 
@@ -41,10 +41,10 @@ namespace Sensor
             while (_queue.ActiveRequest() || ContinueFunctioning())
             {
                 if (_queue.UpwardPeekQueue(out var _))
-                    SetElevatorUpwardProjection();
+                    AdvanceLevels();
 
                 if (_queue.DownwardPeekQueue(out var _))
-                    SetElevatorDownwardProjection();
+                    DescendLevels();
 
                 _status.WaitingForAdditionalRequests();
                 SetIdleProperties();
@@ -147,22 +147,10 @@ namespace Sensor
             _queue.ReviseDownwardQueueOrder(_currentFloor);
         }
 
-        private void SetElevatorDownwardProjection()
-        {
-            _currentFloor = _floor.GetCurrentFloor();
-            if (_queue.DownwardEmptyQueue())
-                DescendLevels();
-        }
-
-        private void SetElevatorUpwardProjection()
-        {
-            _currentFloor = _floor.GetCurrentFloor();
-            if (_queue.UpwardEmptyQueue())
-                AdvanceLevels();
-        }
-
         private void AdvanceLevels()
         {
+            _currentFloor = _floor.GetCurrentFloor();
+
             while (_queue.UpwardEmptyQueue())
             {
                 if (CheckForSameLevelRequest())
@@ -186,6 +174,8 @@ namespace Sensor
 
         private void DescendLevels()
         {
+            _currentFloor = _floor.GetCurrentFloor();
+
             while (_queue.DownwardEmptyQueue())
             {
                 if (CheckForSameLevelRequest(upwards:false))
@@ -286,8 +276,7 @@ namespace Sensor
             _status.NextFloor();
             _timer.NextFloorLevel();
             _status.DetermineCurrentFloor(_currentFloor);
-            _status.DetermineNextFloor(nextLevel == 13 ? 12 
-                : nextLevel == -1 ? 0 : nextLevel);
+            _status.DetermineNextFloor(nextLevel == -1 ? 0 : nextLevel);
             _status.PassedFloor(currentFloor);
         }
 
