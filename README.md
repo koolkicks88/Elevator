@@ -1,5 +1,5 @@
 # Elevator
-Elevator Simulation - Coding Challenge
+Elevator Simulation
 
 Welcome to the elevator simulation.
 
